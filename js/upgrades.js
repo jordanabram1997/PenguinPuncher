@@ -114,9 +114,9 @@ var data = {
 		},
 		{
 			title: "Coming Soon",
-			dpc: 0,
-			dps: ?,
-			price:?,
+			dpc: "?",
+			dps: "?",
+			price:"?",
 			image:"img/diamond-pickaxe.png",
 			multiplier:1.5
 		},
