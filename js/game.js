@@ -1,5 +1,5 @@
 var settings;
-
+ // localStorage.removeItem("clickerSettings")
 $(document).ready(function(){
 	
 	loadData();
@@ -7,8 +7,12 @@ $(document).ready(function(){
 	setupUpgrades();
 	setupDPS();
 
-	$(".js-clicker").on("click", function(){
+	$(".js-clicker").on("mousedown", function(){
 		settings.score = settings.score + settings.dpc;
+		settings.experience = settings.experience + 1;
+
+		settings.level = figureOutLevel();
+
 		setEverything();
 		saveData();
 		ga('send', 'event', 'Penguin', 'click');
@@ -42,7 +46,9 @@ function loadData(){
 	var defaultSettings = {
 		score: 0,
 		dpc: 1,
-		dps: 0
+		dps: 0,
+		level:1,
+		experience:0
 	};
 
 	settings = JSON.parse(localStorage.getItem('clickerSettings')) || defaultSettings;
@@ -52,7 +58,16 @@ function setEverything(){
 	$(".js-score").html(numberWithCommas(Math.floor(settings.score))); 
 	$(".js-dpc").html(numberWithCommas(settings.dpc));
 	$(".js-dps").html(numberWithCommas(settings.dps));
+	$(".js-level").html(numberWithCommas(settings.level));
+	$(".js-experience").html(numberWithCommas(settings.experience));
+	$(".js-progress").width(getExperiencePercentage());
 }
+
+
+Handlebars.registerHelper('addCommas', function(number) {
+  return numberWithCommas(number);
+});
+
 
 function setupUpgrades(){
 	var source   = $("#upgrade-template").html();
@@ -64,6 +79,26 @@ function setupUpgrades(){
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function experienceNeeded(neededLevel) {
+	var experienceNeeded = 25 * neededLevel * neededLevel - 25 * neededLevel;
+
+	return experienceNeeded;
+}
+
+function figureOutLevel() {
+	// http://stackoverflow.com/questions/6954874/php-game-formula-to-calculate-a-level-based-on-exp
+	var level = (25 + Math.sqrt(25 * 25 - 4 * 25 * (-settings.experience) ))/ (2 * 25)
+
+	return Math.floor(level);
+}
+
+function getExperiencePercentage() {
+
+	var percentage = ((settings.experience - experienceNeeded(settings.level)) / experienceNeeded(settings.level + 1)) * 100;
+
+	return percentage + "%"
 }
 
 window.requestAnimFrame = (function(){

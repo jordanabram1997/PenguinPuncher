@@ -37,6 +37,7 @@ html, body,
 }
 .game-container__clicker {
 	display:inline-block;
+	text-align: center;
 }
 .game-container__upgrades {
 	position:absolute;
