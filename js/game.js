@@ -52,6 +52,8 @@ function loadData(){
 	};
 
 	settings = JSON.parse(localStorage.getItem('clickerSettings')) || defaultSettings;
+
+	settings = $.extend(settings, defaultSettings);
 }
 
 function setEverything(){
